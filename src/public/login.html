@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureDocs - Login</title>
+    <!-- Bootstrap CSS v5.3.2 Directo -->
+    <link rel="stylesheet" href="https://jsdelivr.net">
+    <style>
+        body { background-color: #f8f9fa; font-family: system-ui, sans-serif; }
+        .login-card { max-width: 420px; width: 100%; border: none; border-radius: 12px; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card login-card shadow-lg p-4">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-primary">🛡️ SecureDocs</h3>
+            <p class="text-muted small">Sistema de Expedientes Integrado con RBAC + ABAC</p>
+        </div>
+        <div id="alertBox" class="alert alert-danger d-none" role="alert"></div>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="correo" class="form-label fw-semibold small">Correo Institucional</label>
+                <input type="email" class="form-control" id="correo" placeholder="ejemplo@techcorp.com" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label fw-semibold small">Contraseña</label>
+                <input type="password" class="form-control" id="password" value="password123" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Iniciar Sesión</button>
+        </form>
+        <div class="mt-4 pt-3 border-top">
+            <p class="text-muted fw-bold mb-1" style="font-size: 0.75rem;">Cuentas de Prueba:</p>
+            <ul class="text-muted font-monospace mb-0" style="font-size: 0.7rem; padding-left: 1.2rem;">
+                <li>ana@techcorp.com (SUPERVISOR Finanzas)</li>
+                <li>laura@techcorp.com (EMPLEADO RRHH)</li>
+                <li>juan@externo.com (INVITADO Externo)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertBox = document.getElementById('alertBox');
+            alertBox.classList.add('d-none');
+
+            const correo = document.getElementById('correo').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo, password })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Fallo de autenticación');
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('usuario', JSON.stringify(data.usuario));
+                window.location.href = '/index.html';
+            } catch (err) {
+                alertBox.textContent = err.message;
+                alertBox.classList.remove('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

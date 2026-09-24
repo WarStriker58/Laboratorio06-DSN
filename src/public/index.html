@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureDocs - Panel de Control</title>
+    <!-- Bootstrap CSS v5.3.2 Directo -->
+    <link rel="stylesheet" href="https://jsdelivr.net">
+    <style>
+        body { background-color: #f4f6f9; font-family: system-ui, sans-serif; }
+        .card { border: none; border-radius: 8px; }
+        .table-responsive { background: white; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark px-4 py-3 shadow-sm">
+        <a class="navbar-brand fw-bold" href="#">🛡️ SecureDocs Control Center</a>
+        <div class="d-flex align-items-center text-white">
+            <span id="userInfo" class="me-3 badge bg-primary fs-6">Cargando...</span>
+            <button onclick="logout()" class="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <div class="container-fluid my-4 px-4">
+        <div class="row g-4">
+            <!-- Columna Izquierda: Simulación del Entorno ABAC -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-secondary text-white fw-bold">⚙️ Parámetros de Simulación ABAC</div>
+                    <div class="card-body">
+                        <p class="text-muted small">Modifica estas variables para simular el contexto de la petición y evaluar las políticas.</p>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Hora de la Petición</label>
+                            <input type="time" id="simHora" class="form-control" value="10:30">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Ubicación Geográfica</label>
+                            <select id="simUbicacion" class="form-select">
+                                <option value="PERU" selected>🇵🇪 Perú (Nacional)</option>
+                                <option value="ESPANA">🇪🇸 España (Extranjero)</option>
+                                <option value="USA">🇺🇸 Estados Unidos (Extranjero)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Dispositivo de Acceso</label>
+                            <select id="simDispositivo" class="form-select">
+                                <option value="CORPORATIVO" selected>💻 Dispositivo Corporativo</option>
+                                <option value="PERSONAL">📱 Dispositivo Personal (BYOD)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Dirección IP de Red</label>
+                            <input type="text" id="simIp" class="form-control font-monospace" value="192.168.10.20">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consola de Resultados en Tiempo Real -->
+                <div class="card shadow-sm border-0 text-white bg-dark">
+                    <div class="card-header bg-dark border-secondary fw-bold text-info">🖥️ Monitor de Veredicto de Acceso</div>
+                    <div class="card-body font-monospace p-3" style="min-height: 140px; font-size: 0.85rem;">
+                        <div id="veredictoConsola">Selecciona una operación sobre los recursos para evaluar la seguridad...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Cargas de Trabajo y Logs de Auditoría -->
+            <div class="col-md-8">
+                <!-- Sección Documentos -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-primary text-white fw-bold d-flex justify-content-between align-items-center">
+                        <span>📂 Expedientes y Documentos Disponibles</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Título</th>
+                                        <th>Área</th>
+                                        <th>Confidencialidad</th>
+                                        <th>Origen</th>
+                                        <th>Estado</th>
+                                        <th class="text-end px-4">Acciones Autorizadas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="documentosTabla">
+                                    <!-- Dinámico por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de Auditoría en Vivo -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                        <span>📋 Registro de Auditoría (Trazabilidad en tiempo real)</span>
+                        <button onclick="cargarAuditoria()" class="btn btn-sm btn-outline-info">Actualizar logs</button>
+                    </div>
+                    <div class="card-body p-0" style="max-height: 250px; overflow-y: auto;">
+                        <table class="table table-sm table-dark table-hover font-monospace xsmall mb-0" style="font-size: 0.8rem;">
+                            <thead>
+                                <tr class="text-muted">
+                                    <th>Usuario</th>
+                                    <th>Recurso</th>
+                                    <th>Operación</th>
+                                    <th>Resultado</th>
+                                    <th>Motivo del Veredicto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditoriaTabla">
+                                <!-- Dinámico por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
